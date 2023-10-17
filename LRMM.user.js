@@ -25,7 +25,6 @@ const color = {
 }
 
 const LRMM_click = (h, div) => {
-    if(!/^https:\/\/www.luogu.com.cn\/problem\/[0-9a-zA-Z_]*$/.test(location.href)) return
     const uid = 173951, cnt = 20, pid = location.href.split('/')[location.href.split('/').length - 1]
     $.get(`https://www.luogu.com.cn/user/${uid}`, e => {
         const n = JSON.parse(decodeURIComponent(/(?<=JSON\.parse\(decodeURIComponent\(").*(?=")/.exec(e)[0])).currentData.user.followingCount
@@ -62,6 +61,7 @@ const LRMM_click = (h, div) => {
 }
 
 const main = () => {
+    if(!/^https:\/\/www.luogu.com.cn\/problem\/[0-9a-zA-Z_]*$/.test(location.href)) return
     var div = document.querySelector("#app > div.main-container > main > div.full-container > section.main > section > div > div:nth-child(2)")
     var h = document.createElement('h2'); h.innerText = '卷怪监视 '; h.dataset={'v-16db0c63': ''}; h.className = 'lfe-h2';
     h.appendChild(document.createTextNode('Click'))

@@ -30,33 +30,24 @@ const LRMM_click = (h, div) => {
         const n = JSON.parse(decodeURIComponent(/(?<=JSON\.parse\(decodeURIComponent\(").*(?=")/.exec(e)[0])).currentData.user.followingCount
         var para = document.createElement('p'), num = document.createElement('span'); num.innerText = '0'; h.appendChild(num); h.appendChild(document.createTextNode('/' + n))
         div.insertBefore(para, h.nextSibling)
-        const A = i => {
-            if(i * cnt >= n + cnt - 1) return
-            $.get(`https://www.luogu.com.cn/api/user/followings?user=${uid}&page=${i}`, e => {
-                const B = j => {
-                    if(j >= e.users.result.length) return
-                    const name = e.users.result[j].name
-                    $.get(`https://www.luogu.com.cn/record/list?user=${e.users.result[j].uid}&pid=${pid}&page=1&status=12&_contentOnly=1`, d => {
-                        if(d.currentData.records.count > 0){
-                            var span = document.createElement('span')
-                            var link = document.createElement('a')
-                            link.setAttribute('class', 'username')
-                            link.setAttribute('href', '/user/' + e.users.result[j].uid)
-                            link.innerText = e.users.result[j].name
-                            link.setAttribute('style', 'font-weight: bold;' + color[e.users.result[j].uid in special? special[e.users.result[j].uid]: e.users.result[j].color])
-                            span.appendChild(link)
-                            span.appendChild(document.createTextNode(', '))
-                            para.appendChild(span)
-                        }
-                        num.innerText++
-                        B(j + 1)
-                    })
+        const A = i => {$.ajax({'url': `https://www.luogu.com.cn/api/user/followings?user=${uid}&page=${i}`, 'success': (e, _) => {
+            const B = (id, name, col) => {$.ajax({'async': false, 'url': `https://www.luogu.com.cn/record/list?user=${id}&pid=${pid}&page=1&status=12&_contentOnly=1`, 'success': (d) => {
+                if(d.currentData.records.count > 0){
+                    var span = document.createElement('span')
+                    var link = document.createElement('a')
+                    link.setAttribute('class', 'username')
+                    link.setAttribute('href', '/user/' + id)
+                    link.innerText = e.users.result[j].name
+                    link.setAttribute('style', 'font-weight: bold;' + color[id in special? special[id]: col])
+                    span.appendChild(link)
+                    span.appendChild(document.createTextNode(', '))
+                    para.appendChild(span)
                 }
-                B(0)
-                A(i + 1)
-            })
-        }
-        A(1)
+                num.innerText++
+            }, 'error': () => {setTimeout(() => {B(id, name, col)}, 1000)}})}
+            for(var j in e.users.result) B(e.users.result[j].uid, e.users.result[j].name, e.users.result[j].color)
+        }, 'error': () => {setTimeout(() => {A(i)}, 1000)}})}
+        for(var i = 1; i * cnt < n + cnt - 1; i++) A(i)
     })
 }
 

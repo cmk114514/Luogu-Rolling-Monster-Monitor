@@ -36,7 +36,7 @@ const LRMM_click = (h, div) => {
                     var span = document.createElement('span')
                     var link = document.createElement('a')
                     link.setAttribute('class', 'username')
-                    link.setAttribute('href', '/user/' + id)
+                    link.setAttribute('href', `https://www.luogu.com.cn/record/list?user=${id}&pid=${pid}&page=1&status=12`)
                     link.innerText = e.users.result[j].name
                     link.setAttribute('style', 'font-weight: bold;' + color[id in special? special[id]: col])
                     span.appendChild(link)
